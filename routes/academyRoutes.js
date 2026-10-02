@@ -1,0 +1,21 @@
+import { Router } from "express";
+import { authenticate, requireRole } from "../middleware/authMiddleware.js";
+import { academicData, createAnnouncement, createCohort, enrolAccepted, getSettings, listAnnouncements, listAudit, listCohorts, listEnrolments, reports, saveAcademic, saveSettings, updateCohort, updateEnrolment } from "../controllers/academyController.js";
+
+const router = Router();
+router.use(authenticate);
+router.get("/cohorts", listCohorts);
+router.post("/cohorts", requireRole("Super Admin","Administrator","Admissions"), createCohort);
+router.patch("/cohorts/:id", requireRole("Super Admin","Administrator","Admissions"), updateCohort);
+router.get("/enrolments", listEnrolments);
+router.post("/applications/:applicationId/enrol", requireRole("Super Admin","Administrator","Admissions"), enrolAccepted);
+router.patch("/enrolments/:id", requireRole("Super Admin","Administrator","Admissions"), updateEnrolment);
+router.get("/academic/:type", academicData);
+router.post("/academic/:type", requireRole("Super Admin","Administrator","Admissions"), saveAcademic);
+router.get("/reports/:type", reports);
+router.get("/announcements", listAnnouncements);
+router.post("/announcements", requireRole("Super Admin","Administrator"), createAnnouncement);
+router.get("/settings", requireRole("Super Admin","Administrator"), getSettings);
+router.put("/settings", requireRole("Super Admin","Administrator"), saveSettings);
+router.get("/audit", requireRole("Super Admin","Administrator"), listAudit);
+export default router;
